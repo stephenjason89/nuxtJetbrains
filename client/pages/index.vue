@@ -1,66 +1,27 @@
 <template>
-  <div class="container p-2 lg:p-8 flex flex-col">
-    <div class="m-8 flex items-center justify-center">
-      <Logo />
-    </div>
-    <ul v-if="users.length === 0" class="grid grid-cols-1 gap-6 bg-gray-100 rounded p-8 w-full sm:grid-cols-2 lg:grid-cols-3">
-      <contact-card-skeleton v-for="i in 9" :key="`skel-${i}`" />
-    </ul>
-    <ul v-if="users.length &gt; 0" class="grid grid-cols-1 gap-6 bg-gray-100 rounded p-8 w-full sm:grid-cols-2 lg:grid-cols-3">
-      <contact-card v-for="(user, index) in users" :key="index" :user="user" />
-    </ul>
-    <div class="text-center mt-4">
-      <span>provided by endpoint</span><span>&nbsp;</span>
-      <a class="text-blue-400" :href="`${$config.apiUrl}/example?count=9`">/example</a>
-      <span>&nbsp;</span>
-      <span class="text-gray-400 text-sm">(2 second delay)</span>
-    </div>
-    <div class="text-center mt-4">
-      <span class="mr-4">nuxt-tailvue kitchen sink:</span>
-      <button-group>
-        <push-button group="left" to="/modal">
-          Modals
-        </push-button>
-        <push-button group="middle" to="/toast">
-          toasts
-        </push-button>
-        <push-button group="middle" to="/button">
-          buttons
-        </push-button>
-        <push-button group="right" to="/icon">
-          icons
-        </push-button>
-      </button-group>
-    </div>
+  <div class="container">
+    <!--    imported from client/components -->
+    <Logo/>
+    <!--    Imported from client/components/Test/One.vue notice One doesnt have a prefix Test -->
+    <TestOne/>
+    <!--    Imported from client/components/Test/TestTwo.vue notice TestTwo is prefixed with Test -->
+    <TestTwo/>
+
+    <!--      No Errors because this is imported     -->
+    <ImportedComponent/>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Users } from '@/types/api'
-export default Vue.extend({
-  data () {
-    const users:Users = []
-    const count:number = 9
+// can't ctrl click on the link if directory starts with ~/
+// Cannot find module '~/components/test/importedComponent.vue' or its corresponding type declarations.
+// But this is working perfectly and being displayed
+import ImportedComponent from '~/components/test/importedComponent.vue'
 
-    return {
-      users,
-      count,
-    }
-  },
-  mounted () {
-    this.get(this.count)
-  },
-  methods: {
-    async get (count: number): Promise<void> {
-      await this.$sleep(2000)
-      this.users = (await this.$axios.get('example', { params: { count } })).data.data
-    },
-    total (count: number): void {
-      this.users = []
-      this.count = count
-      this.get(this.count)
-    },
-  },
-})
+// import ImportedComponent from '@/components/test/importedComponent.vue' // <--------- can be ctrl clicked
+// import ImportedComponent from '../components/test/importedComponent.vue' // <--------- can be ctrl clicked
+
+export default {
+  components: { ImportedComponent },
+}
 </script>
